@@ -1,0 +1,54 @@
+﻿@page "/timetable"
+@using Timekeeper.Web.Models
+@rendermode InteractiveServer
+
+<PageTitle>Time Table</PageTitle>
+
+<MudButton OnClick="AddEntry">
+    Add new Entry
+</MudButton>
+
+<MudDataGrid T="TimeEntry" Items="@timeEntries" ReadOnly="false"
+             EditMode="DataGridEditMode.Form" EditTrigger="DataGridEditTrigger.OnRowClick">
+    <Columns>
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.StartDate">
+            <EditTemplate>
+                <MudDatePicker @bind-Date="context.Item.EndDate" />
+            </EditTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="x => x.EndDate">
+            <EditTemplate>
+                <MudDatePicker @bind-Date="context.Item.EndDate"/>
+            </EditTemplate>
+        </PropertyColumn>
+        <PropertyColumn Property="@(x => x.IsSickLeave ? "Sick ": "Not Sick")" />
+        <PropertyColumn Property="x => x.Duration" />
+        <PropertyColumn Property="x => x.Comment" />
+    </Columns>
+</MudDataGrid>
+
+
+@code {
+
+    private List<TimeEntry> timeEntries = [
+        new TimeEntry()
+        {
+            Name = "Heinrich",
+            StartDate = new DateTime(2024,9,11,8,0,6),
+            EndDate = new DateTime(2024,9,11,9,9,9),
+            IsSickLeave = false
+        }
+    ];
+
+    private void AddEntry()
+    {
+        timeEntries.Add(new TimeEntry()
+            {
+                Name = "Please enter a name",
+                StartDate = DateTime.UtcNow
+            });
+
+        StateHasChanged();
+    }
+}
